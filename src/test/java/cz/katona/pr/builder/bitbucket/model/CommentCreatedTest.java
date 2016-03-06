@@ -10,7 +10,7 @@ public class CommentCreatedTest {
 
     @Test
     public void testDeserialization() throws Exception {
-        CommentCreated commentCreated = MAPPER.readValue(getClass().getResourceAsStream("/model/commentCreated.json"),
+        CommentCreated commentCreated = MAPPER.readValue(getClass().getResourceAsStream("/bitbucket/model/commentCreated.json"),
                 CommentCreated.class);
         assertThat(commentCreated.getCommentString(), is("Comment text"));
         assertThat(commentCreated.getSourceBranch(), is("branch2"));

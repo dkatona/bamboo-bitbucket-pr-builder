@@ -10,7 +10,7 @@ public class PullRequestTest {
 
     @Test
     public void testDeserialization() throws Exception {
-        PullRequest pullRequest = MAPPER.readValue(getClass().getResourceAsStream("/model/pullRequest.json"),
+        PullRequest pullRequest = MAPPER.readValue(getClass().getResourceAsStream("/bitbucket/model/pullRequest.json"),
                 PullRequest.class);
         assertThat(pullRequest.getId(), is(1l));
         assertThat(pullRequest.getTitle(), is("Title of pull request"));

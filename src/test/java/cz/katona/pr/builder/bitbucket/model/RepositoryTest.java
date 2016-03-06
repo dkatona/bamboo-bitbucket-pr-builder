@@ -4,14 +4,13 @@ import static cz.katona.pr.builder.bitbucket.model.TestUtil.MAPPER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 public class RepositoryTest {
 
     @Test
     public void testDeserialization() throws Exception {
-        Repository repository = MAPPER.readValue(getClass().getResourceAsStream("/model/repository.json"),
+        Repository repository = MAPPER.readValue(getClass().getResourceAsStream("/bitbucket/model/repository.json"),
                 Repository.class);
         assertThat(repository.getName(), is("repo_name"));
         assertThat(repository.getFullName(), is("team_name/repo_name"));

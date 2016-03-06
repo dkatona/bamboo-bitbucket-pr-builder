@@ -10,7 +10,7 @@ public class CommentTest {
 
     @Test
     public void testDeserialization() throws Exception {
-        Comment comment = MAPPER.readValue(getClass().getResourceAsStream("/model/comment.json"), Comment.class);
+        Comment comment = MAPPER.readValue(getClass().getResourceAsStream("/bitbucket/model/comment.json"), Comment.class);
         assertThat(comment.getId(), is(17l));
         assertThat(comment.getParent().getId(), is(16l));
         assertThat(comment.getRawComment(), is("Comment text"));
