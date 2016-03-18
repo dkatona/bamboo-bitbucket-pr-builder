@@ -38,4 +38,14 @@ public class Branch {
     public boolean isEnabled() {
         return enabled;
     }
+
+    @Override
+    public String toString() {
+        return "Branch{" +
+                "name='" + name + '\'' +
+                ", shortName='" + shortName + '\'' +
+                ", key='" + key + '\'' +
+                ", enabled=" + enabled +
+                '}';
+    }
 }

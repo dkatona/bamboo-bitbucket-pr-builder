@@ -36,12 +36,13 @@ public class PullRequestBuilderService {
         notNull(commentCreated, "Created comment can't be null!");
         notEmpty(associatedPlanId, "Plan id can't be empty!");
 
-        String comment = commentCreated.getCommentString();
         String branchName = commentCreated.getSourceBranch();
 
         Branch branch = bambooService.getBranch(associatedPlanId, branchName);
         if (branch == null) {
             branch = bambooService.createBranch(associatedPlanId, branchName);
+        } else if (!branch.isEnabled()) {
+            bambooService.enableBranch(branch.getKey());
         }
         JobQueued jobQueued = bambooService.queueJob(branch.getKey());
         logger.info("Job queued build nummber - {}", jobQueued.getBuildNumber());
