@@ -1,7 +1,9 @@
 package cz.katona.pr.builder.bamboo;
 
-import static cz.katona.pr.builder.bamboo.BambooResources.*;
 import static cz.katona.pr.builder.bamboo.BambooResources.BRANCH_CREATE_RESOURCE;
+import static cz.katona.pr.builder.bamboo.BambooResources.BRANCH_RESOURCE;
+import static cz.katona.pr.builder.bamboo.BambooResources.QUEUE_BRANCH_JOB;
+import static cz.katona.pr.builder.util.RequestUtils.getHttpHeadersWithAuth;
 
 import cz.katona.pr.builder.bamboo.model.Branch;
 import cz.katona.pr.builder.bamboo.model.JobQueued;
@@ -16,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
-
 @Component
-@ConditionalOnProperty(name = {"user", "password"}, prefix = "bamboo")
+@ConditionalOnProperty(name = {"user", "password"}, prefix = "bamboo.basic")
 public class BambooBasicAuthService implements BambooService {
 
     private final String bambooRestEndpoint;
@@ -85,15 +85,6 @@ public class BambooBasicAuthService implements BambooService {
             throw new BambooException("Unable to queue job '" + planIdWithBranch + "', full response " + exchange);
         }
         return exchange.getBody();
-    }
-
-    private HttpHeaders getHttpHeadersWithAuth(String username, String password) {
-        String usernamePassword = username + ":" + password;
-        String base64Credentials = Base64.getEncoder().encodeToString(usernamePassword.getBytes());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + base64Credentials);
-        return headers;
     }
 
 }

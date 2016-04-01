@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import cz.katona.pr.builder.bamboo.BambooService;
 import cz.katona.pr.builder.bamboo.model.Branch;
 import cz.katona.pr.builder.bamboo.model.JobQueued;
+import cz.katona.pr.builder.bitbucket.BitbucketOAuthService;
 import cz.katona.pr.builder.bitbucket.BitbucketService;
 import cz.katona.pr.builder.bitbucket.model.CommentCreated;
 import org.slf4j.Logger;

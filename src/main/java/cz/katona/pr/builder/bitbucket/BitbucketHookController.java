@@ -36,7 +36,7 @@ public class BitbucketHookController {
     }
 
     @RequestMapping(value = "/commentCreated", method = POST)
-    public void greeting(@RequestBody CommentCreated commentCreated) {
+    public void commentCreated(@RequestBody CommentCreated commentCreated) {
         String comment = commentCreated.getCommentString();
         logger.debug("Received comment='{}'", comment);
 
