@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@ConditionalOnBean(value = OAuthSettings.class)
+@ConditionalOnBean(value = BambooOAuthSettings.class)
 public class BambooOAuthService implements BambooService {
 
     private final OAuth10aService service;
@@ -34,12 +34,12 @@ public class BambooOAuthService implements BambooService {
 
     @Autowired
     public BambooOAuthService(@Value("${bamboo.rest.uri}") String bambooRestEndpoint,
-                              OAuthSettings oAuthSettings,
+                              BambooOAuthSettings bambooOAuthSettings,
                               ObjectMapper objectMapper) {
         this.bambooRestEndpoint = bambooRestEndpoint;
         this.objectMapper = objectMapper;
-        this.service = oAuthSettings.getOAuthService();
-        this.accessToken = oAuthSettings.getAccessToken();
+        this.service = bambooOAuthSettings.getOAuthService();
+        this.accessToken = bambooOAuthSettings.getAccessToken();
     }
 
     @Override

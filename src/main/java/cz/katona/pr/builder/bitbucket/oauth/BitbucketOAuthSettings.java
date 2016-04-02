@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(name = {"clientId", "clientSecret"}, prefix = "bitbucket.oauth")
-class OAuthSettings {
+class BitbucketOAuthSettings {
 
     private final OAuth20Service service;
 
     @Autowired
-    public OAuthSettings(@Value("${bitbucket.oauth.clientId}") String clientId,
-                         @Value("${bitbucket.oauth.clientSecret}") String clientSecret) {
+    public BitbucketOAuthSettings(@Value("${bitbucket.oauth.clientId}") String clientId,
+                                  @Value("${bitbucket.oauth.clientSecret}") String clientSecret) {
 
         this.service = new ServiceBuilder().apiKey(clientId).apiSecret(clientSecret).grantType("client_credentials")
                 .build(new BitbucketOAuthApi());

@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(name = {"privateKey", "apiKey", "accessToken", "accessTokenSecret"}, prefix = "bamboo.oauth")
-class OAuthSettings {
+class BambooOAuthSettings {
 
     private final OAuth10aService service;
     private final OAuth1AccessToken oAuth1AccessToken;
 
     @Autowired
-    public OAuthSettings(@Value("${bamboo.oauth.apiKey}") String apiKey,
-                         @Value("file://${bamboo.oauth.privateKey}") Resource privateKeyResource,
-                         @Value("${bamboo.oauth.accessToken}") String accessToken,
-                         @Value("${bamboo.oauth.accessTokenSecret}") String accessTokenSecret,
-                         BambooOAuthApi bambooOAuthApi) {
+    public BambooOAuthSettings(@Value("${bamboo.oauth.apiKey}") String apiKey,
+                               @Value("file://${bamboo.oauth.privateKey}") Resource privateKeyResource,
+                               @Value("${bamboo.oauth.accessToken}") String accessToken,
+                               @Value("${bamboo.oauth.accessTokenSecret}") String accessTokenSecret,
+                               BambooOAuthApi bambooOAuthApi) {
 
         this.service = new ServiceBuilder().apiKey(apiKey).apiSecret(
                 readPrivateKey(privateKeyResource)).build(bambooOAuthApi);

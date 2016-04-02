@@ -23,12 +23,12 @@ import org.springframework.stereotype.Component;
 public class BitbucketOAuthService implements BitbucketService {
 
     private final String restUri;
-    private final OAuthSettings oAuthSettings;
+    private final BitbucketOAuthSettings oAuthSettings;
     private final ObjectMapper objectMapper;
 
     @Autowired
     public BitbucketOAuthService(@Value("${bitbucket.rest.uri}") String restUri,
-                                 OAuthSettings oAuthSettings, ObjectMapper objectMapper) {
+                                 BitbucketOAuthSettings oAuthSettings, ObjectMapper objectMapper) {
         this.restUri = restUri;
         this.oAuthSettings = oAuthSettings;
         this.objectMapper = objectMapper;
