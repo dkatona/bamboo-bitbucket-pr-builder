@@ -49,11 +49,15 @@ public class BambooOAuthService implements BambooService {
 
         final Response response = signAndSend(request);
         int statusCode = response.getCode();
-        if (statusCode != HttpStatus.OK.value()) {
+        if (statusCode == HttpStatus.OK.value()) {
+            //branch exists
+            return readValue(response.getBody(), Branch.class);
+        } else if (statusCode == HttpStatus.NO_CONTENT.value()) {
+            //branch doesn't exist
+            return null;
+        } else {
             throw new BambooException("Unable to fetch branch '" + branchName + "', full response " + response);
         }
-        return readValue(response.getBody(), Branch.class);
-
     }
 
     @Override

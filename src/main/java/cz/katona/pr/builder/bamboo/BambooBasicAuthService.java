@@ -43,10 +43,17 @@ public class BambooBasicAuthService implements BambooService {
         ResponseEntity<Branch> exchange = restTemplate.exchange(BRANCH_RESOURCE.expand(bambooRestEndpoint, planId, branchName).toString(),
                 HttpMethod.GET, request, Branch.class);
 
-        if (exchange.getStatusCode() != HttpStatus.OK) {
+        HttpStatus status = exchange.getStatusCode();
+
+        if (status == HttpStatus.OK) {
+            //branch exists
+            return exchange.getBody();
+        } else if (status == HttpStatus.NO_CONTENT) {
+            //branch doesn't exist
+            return null;
+        } else {
             throw new BambooException("Unable to fetch branch '" + branchName + "', full response " + exchange);
         }
-        return exchange.getBody();
     }
 
     @Override
