@@ -16,7 +16,7 @@ public class SecuringInterceptor extends HandlerInterceptorAdapter {
 
     private final String accessToken;
 
-    private static final String ACCESS_TOKEN_PARAM = "accessToken";
+    static final String ACCESS_TOKEN_PARAM = "accessToken";
 
     @Autowired
     public SecuringInterceptor(@Value("${app.accessToken}") String accessToken) {
