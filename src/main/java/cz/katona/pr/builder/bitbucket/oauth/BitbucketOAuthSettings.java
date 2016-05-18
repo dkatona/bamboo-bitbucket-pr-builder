@@ -11,6 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+/**
+ * Settings related to bitbucket OAuth endpoint, this bean is enabled only if these properties are set
+ * <ul>
+ *     <li>bitbucket.oauth.clientId</li>
+ *     <li>bitbucket.oauth.clientSecret</li>
+ * </ul>
+ */
 @Component
 @ConditionalOnProperty(name = {"clientId", "clientSecret"}, prefix = "bitbucket.oauth")
 class BitbucketOAuthSettings {
@@ -25,17 +32,22 @@ class BitbucketOAuthSettings {
                 .build(new BitbucketOAuthApi());
     }
 
-    public OAuth20Service getOAuthService() {
+    OAuth20Service getOAuthService() {
         return service;
     }
 
-    public OAuth2AccessToken getAccessToken() {
+    OAuth2AccessToken getAccessToken() {
+        OAuthRequest request = buildOAuthRequest();
+        return service.getApi().getAccessTokenExtractor().extract(request.send().getBody());
+    }
+
+    OAuthRequest buildOAuthRequest() {
         OAuthRequest request = new OAuthRequest(service.getApi().getAccessTokenVerb(), service.getApi().getAccessTokenEndpoint(), service);
         OAuthConfig config = service.getConfig();
         request.addParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
         request.addParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
         request.addParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
         request.addParameter(OAuthConstants.GRANT_TYPE, config.getGrantType());
-        return service.getApi().getAccessTokenExtractor().extract(request.send().getBody());
+        return request;
     }
 }

@@ -1,25 +1,20 @@
-package cz.katona.pr.builder.bitbucket;
+package cz.katona.pr.builder;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-import cz.katona.pr.builder.CommentPlanLookup;
-import cz.katona.pr.builder.PullRequestBuilderService;
 import cz.katona.pr.builder.bitbucket.model.CommentCreated;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class BitbucketHookController {
+public class PullRequestCommentHookController {
 
-    private static final Logger logger = LoggerFactory.getLogger(BitbucketHookController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PullRequestCommentHookController.class);
 
     private final String allowedCommentPrefix;
     private final PullRequestBuilderService pullRequestBuilderService;
@@ -27,9 +22,9 @@ public class BitbucketHookController {
 
 
     @Autowired
-    public BitbucketHookController(@Value("${bitbucket.comment.prefix}") String allowedCommentPrefix,
-                                   CommentPlanLookup commentPlanLookup,
-                                   PullRequestBuilderService pullRequestBuilderService) {
+    public PullRequestCommentHookController(@Value("${bitbucket.comment.prefix}") String allowedCommentPrefix,
+                                            CommentPlanLookup commentPlanLookup,
+                                            PullRequestBuilderService pullRequestBuilderService) {
         this.allowedCommentPrefix = allowedCommentPrefix;
         this.pullRequestBuilderService = pullRequestBuilderService;
         this.commentPlanLookup = commentPlanLookup;

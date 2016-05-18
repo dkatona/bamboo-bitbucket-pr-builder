@@ -1,0 +1,21 @@
+{
+  "username": "tutorials",
+  "pull_request_id": 672,
+  "comment_id": 14356,
+  "display_name": "tutorials",
+  "parent_id": 123,
+  "deleted": false,
+  "utc_last_updated": "2012-08-12 20:04:38+00:00",
+  "filename_hash": null,
+  "base_rev": "174eecac678c",
+  "filename": null,
+  "content": "New comment",
+  "content_rendered": "<p>This is yet another comment</p>\n",
+  "user_avatar_url": "https://secure.gravatar.com/avatar/0bc5bd490000b8e63c35c0f54e667b9e?d=identicon&s=32",
+  "line_from": null,
+  "line_to": null,
+  "dest_rev": "101f16a95c13",
+  "utc_created_on": "2012-08-12 20:04:38+00:00",
+  "anchor": "a18fd07465b5",
+  "is_spam": false
+}

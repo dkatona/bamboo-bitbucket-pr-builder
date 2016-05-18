@@ -1,6 +1,6 @@
 package cz.katona.pr.builder.bitbucket.model;
 
-import static cz.katona.pr.builder.bitbucket.model.TestUtil.MAPPER;
+import static cz.katona.pr.builder.TestUtil.MAPPER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
