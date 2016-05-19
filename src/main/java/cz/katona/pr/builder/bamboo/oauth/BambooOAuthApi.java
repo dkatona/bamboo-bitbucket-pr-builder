@@ -7,6 +7,7 @@ import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.services.RSASha1SignatureService;
 import com.github.scribejava.core.services.SignatureService;
+import cz.katona.pr.builder.bamboo.BambooException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,12 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+/**
+ * Definition for bamboo OAuth1a API. This bean is enabled only if this property is set:
+ * <ul>
+ *     <li>bamboo.oauth.privateKey</li>
+ * </ul>
+ */
 @Component
 @ConditionalOnProperty(name = "privateKey", prefix = "bamboo.oauth")
 class BambooOAuthApi extends DefaultApi10a {
@@ -28,10 +35,10 @@ class BambooOAuthApi extends DefaultApi10a {
             new UriTemplate("{serverBaseUrl}/plugins/servlet/oauth/authorize?oauth_token={oauth_token}");
 
     private static final UriTemplate REQUEST_TOKEN_TEMPLATE =
-            new UriTemplate("{serverBaseUrl}/plugins/servlet//oauth/request-token");
+            new UriTemplate("{serverBaseUrl}/plugins/servlet/oauth/request-token");
 
     private static final UriTemplate ACCESS_TOKEN_TEMPLATE =
-            new UriTemplate("{serverBaseUrl}/plugins/servlet//oauth/access-token");
+            new UriTemplate("{serverBaseUrl}/plugins/servlet/oauth/access-token");
 
     private String serverBaseUrl = null;
 
@@ -70,9 +77,8 @@ class BambooOAuthApi extends DefaultApi10a {
             PrivateKey privateKey = fac.generatePrivate(privKeySpec);
             return new RSASha1SignatureService(privateKey);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BambooException("Unable to initialize signature service with given private key!", e);
         }
     }
-
 
 }

@@ -1,0 +1,14 @@
+{
+  "expand": "latestResult,master",
+  "description": "Feature Branch Build",
+  "shortName": "dk-test-int",
+  "shortKey": "FBB395",
+  "enabled": true,
+  "isFavourite": false,
+  "link": {
+    "href": "https://server/builds/rest/api/latest/plan/DP-FBB395",
+    "rel": "self"
+  },
+  "key": "DP-FBB395",
+  "name": "My branch"
+}

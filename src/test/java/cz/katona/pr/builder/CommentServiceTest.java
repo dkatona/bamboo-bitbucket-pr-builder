@@ -21,7 +21,7 @@ public class CommentServiceTest {
 
     private static final String BAMBOO_BROWSE_URI = "https://myserver.net/builds/browse";
 
-    private static final JobQueued JOB_QUEUED = new JobQueued("DP", "23", "DP-FBB-3", "manual");
+    private static final JobQueued JOB_QUEUED = new JobQueued("DP", 23, "DP-FBB-3", "manual");
 
     private static final String JOKE_API_RESPONSE = "{\n" +
             "  \"type\": \"success\",\n" +

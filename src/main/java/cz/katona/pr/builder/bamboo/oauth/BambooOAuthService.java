@@ -4,6 +4,8 @@ import static cz.katona.pr.builder.bamboo.BambooResources.BRANCH_CREATE_RESOURCE
 import static cz.katona.pr.builder.bamboo.BambooResources.BRANCH_RESOURCE;
 import static cz.katona.pr.builder.bamboo.BambooResources.QUEUE_BRANCH_JOB;
 import static cz.katona.pr.builder.bamboo.BambooResources.BRANCH_ENABLE_RESOURCE;
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.model.OAuth1AccessToken;
@@ -15,6 +17,7 @@ import cz.katona.pr.builder.bamboo.BambooException;
 import cz.katona.pr.builder.bamboo.BambooService;
 import cz.katona.pr.builder.bamboo.model.Branch;
 import cz.katona.pr.builder.bamboo.model.JobQueued;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -23,6 +26,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Service that allows various operations on bamboo API, authentication is done through OAuth1a.
+ * This bean is enabled only if {@link BambooOAuthSettings} is enabled
+ */
 @Component
 @ConditionalOnBean(value = BambooOAuthSettings.class)
 public class BambooOAuthService implements BambooService {
@@ -36,6 +43,10 @@ public class BambooOAuthService implements BambooService {
     public BambooOAuthService(@Value("${bamboo.rest.uri}") String bambooRestEndpoint,
                               BambooOAuthSettings bambooOAuthSettings,
                               ObjectMapper objectMapper) {
+        notEmpty(bambooRestEndpoint, "Bamboo rest endpoint can't be empty!");
+        notNull(bambooOAuthSettings, "Bamboo oauth settings can't be null!");
+        notNull(objectMapper, "Object mapper can't be null!");
+
         this.bambooRestEndpoint = bambooRestEndpoint;
         this.objectMapper = objectMapper;
         this.service = bambooOAuthSettings.getOAuthService();
@@ -44,6 +55,9 @@ public class BambooOAuthService implements BambooService {
 
     @Override
     public Branch getBranch(String planId, String branchName) {
+        notEmpty(planId, "Plan id can't be empty!");
+        notEmpty(branchName, "Branch name can't be empty!");
+
         final OAuthRequest request = new OAuthRequest(Verb.GET, BRANCH_RESOURCE.expand(bambooRestEndpoint,
                 planId, branchName).toString(), service);
 
@@ -62,6 +76,9 @@ public class BambooOAuthService implements BambooService {
 
     @Override
     public Branch createBranch(String planId, String branchName) {
+        notEmpty(planId, "Plan id can't be empty!");
+        notEmpty(branchName, "Branch name can't be empty!");
+
         final OAuthRequest request = new OAuthRequest(Verb.PUT,
                 BRANCH_CREATE_RESOURCE.expand(bambooRestEndpoint, planId, branchName, branchName).toString(), service);
 
@@ -76,18 +93,22 @@ public class BambooOAuthService implements BambooService {
 
     @Override
     public void enableBranch(String planIdWithBranch) {
+        notEmpty(planIdWithBranch, "Plan id with branch can't be empty!");
+
         final OAuthRequest request = new OAuthRequest(Verb.POST,
                 BRANCH_ENABLE_RESOURCE.expand(bambooRestEndpoint, planIdWithBranch).toString(), service);
 
         final Response response = signAndSend(request);
         int statusCode = response.getCode();
-        if (statusCode != HttpStatus.OK.value()) {
+        if (statusCode != HttpStatus.NO_CONTENT.value()) {
             throw new BambooException("Unable to enable plan '" + planIdWithBranch + "', full response " + response);
         }
     }
 
     @Override
     public JobQueued queueJob(String planIdWithBranch) {
+        notEmpty(planIdWithBranch, "Plan id with branch can't be empty!");
+
         final OAuthRequest request = new OAuthRequest(Verb.POST,
                 QUEUE_BRANCH_JOB.expand(bambooRestEndpoint, planIdWithBranch).toString(), service);
 
@@ -108,7 +129,7 @@ public class BambooOAuthService implements BambooService {
         }
     }
 
-    private Response signAndSend(OAuthRequest request) {
+    Response signAndSend(OAuthRequest request) {
         service.signRequest(accessToken, request);
         return request.send();
     }

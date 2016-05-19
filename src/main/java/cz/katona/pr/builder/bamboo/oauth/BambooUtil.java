@@ -11,6 +11,11 @@ class BambooUtil {
     private BambooUtil() {
     }
 
+    /**
+     * Reads private key and strips out the beginning and the end of it (private kye directives)
+     * @param privateKeyResource resource containing private key
+     * @return private key without directives
+     */
     public static String readPrivateKey(Resource privateKeyResource)  {
         try {
             String privateKeyString = IOUtils.toString(privateKeyResource.getInputStream());
