@@ -68,7 +68,7 @@ public class CommentService {
         return comment;
     }
 
-    private Optional<String> fetchJoke() {
+     Optional<String> fetchJoke() {
         String joke = null;
         try {
             ResponseEntity<JsonNode> response = restTemplate.getForEntity(JOKE_URI, JsonNode.class);
