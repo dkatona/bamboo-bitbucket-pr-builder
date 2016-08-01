@@ -31,7 +31,7 @@ public class BambooOAuthServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        Resource privateKey = new ClassPathResource("private_key.pem");
+        String privateKey = "classpath:private_key.pem";
         BambooOAuthSettings oAuthSettings = new BambooOAuthSettings(
                 "apiKey", privateKey, "token", "tokenSecret", new BambooOAuthApi("https://my.bamboo.com", privateKey));
         BambooOAuthService service = new BambooOAuthService("https://my.bamboo.com", oAuthSettings, MAPPER);

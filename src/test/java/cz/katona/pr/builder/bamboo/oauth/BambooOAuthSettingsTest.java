@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 
 public class BambooOAuthSettingsTest {
 
-    private static final Resource PRIVATE_KEY = new ClassPathResource("private_key.pem");
+    private static final String PRIVATE_KEY = "classpath:private_key.pem";
 
     private static final BambooOAuthSettings OAUTH_SETTINGS = new BambooOAuthSettings(
             "apiKey", PRIVATE_KEY, "token", "tokenSecret", new BambooOAuthApi("https://my.bamboo.com", PRIVATE_KEY));

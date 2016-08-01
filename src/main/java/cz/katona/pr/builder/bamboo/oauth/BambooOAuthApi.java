@@ -8,14 +8,16 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.services.RSASha1SignatureService;
 import com.github.scribejava.core.services.SignatureService;
 import cz.katona.pr.builder.bamboo.BambooException;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.UriTemplate;
 
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -42,15 +44,15 @@ class BambooOAuthApi extends DefaultApi10a {
 
     private String serverBaseUrl = null;
 
-    private Resource privateKeyFile = null;
+    private String privateKeyPath = null;
 
     @Autowired
     public BambooOAuthApi(@Value("${bamboo.base.uri}") String serverBaseUrl,
-                          @Value("file://${bamboo.oauth.privateKey}") Resource privateKeyResource) {
+                          @Value("${bamboo.oauth.privateKey}") String privateKeyPath) {
         notEmpty(serverBaseUrl, "Bamboo base uri can't be empty!");
-        notNull(privateKeyResource, "Private key file can't be null!");
+        notEmpty(privateKeyPath, "Private key path can't be empty!");
         this.serverBaseUrl = serverBaseUrl;
-        this.privateKeyFile = privateKeyResource;
+        this.privateKeyPath = privateKeyPath;
     }
 
     @Override
@@ -71,7 +73,7 @@ class BambooOAuthApi extends DefaultApi10a {
     @Override
     public SignatureService getSignatureService() {
         try {
-            String privateKeyString = BambooUtil.readPrivateKey(privateKeyFile);
+            String privateKeyString = BambooUtil.readPrivateKey(privateKeyPath);
             KeyFactory fac = KeyFactory.getInstance("RSA");
             PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString));
             PrivateKey privateKey = fac.generatePrivate(privKeySpec);

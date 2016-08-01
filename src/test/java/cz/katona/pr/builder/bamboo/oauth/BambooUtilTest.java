@@ -12,8 +12,7 @@ public class BambooUtilTest {
 
     @Test
     public void testReadPrivateKey() throws Exception {
-        Resource resource = new ClassPathResource("private_key.pem");
-        String privateKey = BambooUtil.readPrivateKey(resource);
+        String privateKey = BambooUtil.readPrivateKey("classpath:private_key.pem");
         assertThat(privateKey, not(containsString("PRIVATE KEY")));
     }
 }

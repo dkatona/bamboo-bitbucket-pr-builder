@@ -11,7 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 public class BambooOAuthApiTest {
 
     private static final BambooOAuthApi OAUTH_API = new BambooOAuthApi("https://my.bamboo.com",
-            new ClassPathResource("private_key.pem"));
+            "classpath:private_key.pem");
 
     @Test
     public void testAccessTokenEndpoint() throws Exception {
