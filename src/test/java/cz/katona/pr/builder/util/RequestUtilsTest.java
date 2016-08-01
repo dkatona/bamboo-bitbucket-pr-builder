@@ -1,9 +1,8 @@
 package cz.katona.pr.builder.util;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isNull;
 
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +36,7 @@ public class RequestUtilsTest {
 
     private void assertAuthHeader(HttpHeaders httpHeaders, String expectedUser, String expectedPass) {
         List<String> authHeader = httpHeaders.get(HttpHeaders.AUTHORIZATION);
-        assertThat(authHeader, not(isNull()));
+        assertThat(authHeader, notNullValue());
 
         String base64header = authHeader.get(0);
         assertThat(base64header, is("Basic " + Base64.getEncoder().encodeToString((

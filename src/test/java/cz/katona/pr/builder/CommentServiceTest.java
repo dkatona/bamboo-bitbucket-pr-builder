@@ -14,8 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 public class CommentServiceTest {
 
-    private CommentService commentService;
-
     private static final String COMMENT_PATTERN_JOKE = "Link to the [build]({build_link}).{joke}";
     private static final String COMMENT_PATTERN_NO_JOKE = "Link to the [build]({build_link}).";
 
