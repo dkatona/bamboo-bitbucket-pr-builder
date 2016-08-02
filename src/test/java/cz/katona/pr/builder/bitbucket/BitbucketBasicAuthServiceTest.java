@@ -1,6 +1,8 @@
 package cz.katona.pr.builder.bitbucket;
 
+import static cz.katona.pr.builder.TestUtil.MAPPER;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -9,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import cz.katona.pr.builder.TestUtil;
 import cz.katona.pr.builder.bitbucket.model.CommentAdd;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +33,7 @@ public class BitbucketBasicAuthServiceTest {
     @Before
     public void setUp() throws Exception {
         restTemplate = mock(RestTemplate.class);
-        basicAuthService = new BitbucketBasicAuthService("https://my.bitbucket.com", "dusan", "pass", restTemplate);
+        basicAuthService = new BitbucketBasicAuthService("https://my.bitbucket.com", "dusan", "pass", restTemplate, MAPPER);
     }
 
     @Test
@@ -59,5 +62,32 @@ public class BitbucketBasicAuthServiceTest {
                 .thenReturn(new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED));
         basicAuthService.createComment("bbox/data-platform", 12L, "My comment", 13L);
 
+    }
+
+    @Test
+    public void testMainBranch() throws Exception {
+        when(restTemplate.exchange(anyString(),
+                any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenReturn(new ResponseEntity<Object>("{\"name\":\"master\"}", HttpStatus.OK));
+        String mainBranch = basicAuthService.getMainBranch("bbox/data-platform");
+        assertThat(mainBranch, is("master"));
+    }
+
+    @Test
+    public void testMainBranchNotSet() throws Exception {
+        when(restTemplate.exchange(anyString(),
+                any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenReturn(new ResponseEntity<Object>(BitbucketResources.NO_BRANCH_SET_RESPONSE,
+                        HttpStatus.NOT_FOUND));
+        String mainBranch = basicAuthService.getMainBranch("bbox/data-platform");
+        assertThat(mainBranch, nullValue());
+    }
+
+    @Test(expected = BitbucketException.class)
+    public void testMainBranchInvalid() throws Exception {
+        when(restTemplate.exchange(anyString(),
+                any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenReturn(new ResponseEntity<Object>(HttpStatus.NOT_FOUND));
+        basicAuthService.getMainBranch("bbox/data-platform");
     }
 }

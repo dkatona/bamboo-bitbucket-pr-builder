@@ -14,4 +14,11 @@ public interface BitbucketService {
      * @param commentParentId parent of the comment, can be null
      */
     void createComment(String repositoryFullName, Long pullId, String commentContent, Long commentParentId);
+
+    /**
+     * Returns name of the main branch in the repository
+     * @param repositoryFullName name of the bitbucket repository in the form e.g. "bbox/data-platform", can't be empty
+     * @return name of the main branch, null if not set
+     */
+    String getMainBranch(String repositoryFullName);
 }

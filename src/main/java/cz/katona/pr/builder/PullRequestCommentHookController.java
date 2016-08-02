@@ -73,13 +73,4 @@ public class PullRequestCommentHookController {
                 comment.startsWith(allowedCommentPrefix) &&
                 commentPlanLookup.getPlanId(repositoryName, comment) != null;
     }
-
-    /**
-     * Healthcheck endpoint
-     * @return
-     */
-    @RequestMapping(value = "/info", method = GET)
-    public String info() {
-        return "Listening";
-    }
 }

@@ -6,6 +6,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
@@ -18,7 +19,10 @@ import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 /**
  * Service that allows various operations on bitbucket API, authentication is done through OAuth.
@@ -35,6 +39,8 @@ public class BitbucketOAuthService implements BitbucketService {
     private final String bitbucketRestEndpoint;
     private final BitbucketOAuthSettings oAuthSettings;
     private final ObjectMapper objectMapper;
+
+    private static final String NO_BRANCH_SET = "No main branch set";
 
     @Autowired
     public BitbucketOAuthService(@Value("${bitbucket.rest.uri}") String bitbucketRestEndpoint,
@@ -59,6 +65,34 @@ public class BitbucketOAuthService implements BitbucketService {
         if (!response.isSuccessful()) {
             throw new BitbucketException("Error creating comment via bitbucket API, response=" + response);
         }
+    }
+
+    @Override
+    public String getMainBranch(String repositoryFullName) {
+        notEmpty(repositoryFullName, "repositoryFullName can't be empty!");
+
+        final OAuthRequest request = new OAuthRequest(Verb.GET,
+                BitbucketResources.MAIN_BRANCH_RESOURCE.expand(bitbucketRestEndpoint, repositoryFullName).toString(),
+                oAuthSettings.getOAuthService());
+        request.addHeader(AUTHORIZATION, "Bearer " + oAuthSettings.getAccessToken().getAccessToken());
+        final Response response = sendRequest(request);
+
+        String mainBranchName = null;
+        int responseCode = response.getCode();
+
+        if (responseCode == HttpStatus.OK.value()) {
+            try {
+                JsonNode responseTree = objectMapper.readTree(response.getBody());
+                mainBranchName = responseTree.get("name").asText();
+            } catch (IOException ioex) {
+                throw new BitbucketException("Unable to deserialize response from bitbucket API", ioex);
+            }
+        } else if (response.getCode() == HttpStatus.NOT_FOUND.value() && NO_BRANCH_SET.equals(response.getBody())) {
+            mainBranchName = null; //no main branch set, but valid call
+        } else {
+            throw new BitbucketException("Error getting information about main branch via bitbucket API, response=" + response);
+        }
+        return mainBranchName;
     }
 
     OAuthRequest buildCommentRequest(String repositoryFullName, Long pullId, String commentContent, Long commentParentId) {
